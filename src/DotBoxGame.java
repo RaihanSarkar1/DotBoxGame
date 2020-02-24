@@ -5,7 +5,6 @@ import java.util.Scanner;
 public class DotBoxGame {
 
 	public DotBoxGame() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public static void main(String[] args) {
@@ -14,11 +13,12 @@ public class DotBoxGame {
 		int width = 0;
 		int height = 0;
 		int playerSelection = 0;
-		Player starter;
+		Player user;
 		Node root;
 		int[] move = new int[2];
 		String[] moveStr;
 		Error result = null;
+		
 		while(width == 0)
 		{
 			System.out.print("Please enter the width of the grid: ");
@@ -61,34 +61,34 @@ public class DotBoxGame {
 		
 		if(playerSelection == 1)
 		{
-			starter = Player.P1;
+			user = Player.P1;
 		}
 		else if(playerSelection == 2)
 		{
-			starter = Player.P2;
+			user = Player.P2;
 		}
 		else
 		{
 			Random rand = new Random(System.currentTimeMillis());
 			boolean coinToss = rand.nextBoolean();
 			if(coinToss)
-				starter = Player.P1;
+				user = Player.P1;
 			else
-				starter = Player.P2;
+				user = Player.P2;
 		}
 		
-		root = new Node(height, width, starter);
+		root = new Node(height, width, user);
 		
 		System.out.println("Please enter the coordinates of your moves in column, row order."
 				+ "\nCoordinates should be separated by a comma.\n");
 		
 		root.printNode();
 
-		if(starter == Player.P2) {
+		if(user == Player.P2) {
 			do{
 				System.out.print("Player2's move: ");
 				moveStr = s.nextLine().split(",");
-				result = Error.SUCCESS;
+				result = Error.SUCCESSFUllMOVE;
 				if(moveStr.length < 2)
 				{
 					System.out.println("That move is invalid. Please enter the desired move in <column>,<row> format.");
@@ -107,24 +107,24 @@ public class DotBoxGame {
 					}
 				}
 				if(result != Error.INVALID_NUMBER)
-					result = root.makeMove(move[0], move[1], Player.P2);
+					result = root.makeMove(move[0], move[1]);
 				if(result == Error.INVALID_SPACE)
 					System.out.println("You cannot draw a line on a node.");
 				if(result == Error.OUT_OF_BOUNDS)
 					System.out.println("That coordinate is outside the boundaries of the grid.");
 				if(result == Error.SPACE_FILLED)
 					System.out.println("That space already has a line drawn in it.");
-			} while (result != Error.SUCCESS);
+			} while (result != Error.SUCCESSFUllMOVE);
 		System.out.print("\n");
 		root.printNode();
 		}
 		
-		while(!root.isOver())
+		while(!root.gameOver())
 		{
 			do {
 				System.out.print("Player1's move: ");
 				moveStr = s.nextLine().split(",");
-				result = Error.SUCCESS;
+				result = Error.SUCCESSFUllMOVE;
 				if(moveStr.length < 2)
 				{
 					System.out.println("That move is invalid. Please enter the desired move in <column>,<row> format.");
@@ -143,22 +143,24 @@ public class DotBoxGame {
 					}
 				}
 				if(result != Error.INVALID_NUMBER)
-					result = root.makeMove(move[0], move[1], Player.P1);
+					result = root.makeMove(move[0], move[1]);
 				if(result == Error.INVALID_SPACE)
 					System.out.println("You cannot draw a line there.");
 				if(result == Error.OUT_OF_BOUNDS)
 					System.out.println("That coordinate is outside the boundaries of the grid.");
 				if(result == Error.SPACE_FILLED)
 					System.out.println("That space already has a line drawn in it.");
-			} while (result != Error.SUCCESS);
+				if(result == Error.P1SCORE)
+					System.out.println("Player 1 scored. You win a bonus move.");
+			} while (result != Error.SUCCESSFUllMOVE);
 			
 			System.out.print("\n");
 			root.printNode();
-			if(!root.isOver())
-			{
+			
+			do{
 				System.out.print("Player2's move: ");
 				moveStr = s.nextLine().split(",");
-				result = Error.SUCCESS;
+				result = Error.SUCCESSFUllMOVE;
 				if(moveStr.length < 2)
 				{
 					System.out.println("That move is invalid. Please enter the desired move in <column>,<row> format.");
@@ -177,20 +179,20 @@ public class DotBoxGame {
 					}
 				}
 				if(result != Error.INVALID_NUMBER)
-					result = root.makeMove(move[0], move[1],Player.P2);
+					result = root.makeMove(move[0], move[1]);
 				if(result == Error.INVALID_SPACE)
 					System.out.println("You cannot draw a line there.");
 				if(result == Error.OUT_OF_BOUNDS)
 					System.out.println("That coordinate is outside the boundaries of the grid.");
 				if(result == Error.SPACE_FILLED)
 					System.out.println("That space already has a line drawn in it.");
-			} while (result != Error.SUCCESS);
+			} while (result != Error.SUCCESSFUllMOVE);
 			System.out.print("\n");
 			root.printNode();
 					
 		}
 		
-		System.out.println(".............\nScore\n..............");
+		System.out.println(".............\nFinal Score\n..............");
 		System.out.println("Player 1 score: " + root.getP1Score());
 		System.out.println("Player 2 score: " + root.getP2Score());
 		

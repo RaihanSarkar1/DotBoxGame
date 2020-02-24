@@ -1,10 +1,9 @@
-
 public class Node {
 	private int[][] grid;
-	private Player type;
+	private Player player;
 	private int p1Score;
 	private int p2Score;
-	
+
 	
 	public Node() {
 		// TODO Auto-generated constructor stub
@@ -17,7 +16,7 @@ public class Node {
 		int row = (rows * 2) + 1;
 		int col = (cols * 2) + 1;
 		grid = new int[row][col];
-		type = playerT;
+		player = playerT;
 	
 		p1Score = 0;
 		p2Score = 0;
@@ -26,12 +25,10 @@ public class Node {
 	
 	public int getP1Score() { return p1Score; }
 	public int getP2Score() { return p2Score; }
-	public Player getType() { return type; }
 	
 	
 	
-	
-	public Error makeMove(int row, int col, Player playerT)
+	public Error makeMove(int row, int col)
 	{
 		if( row < 0 || row > grid.length || col < 0 || col > grid[0].length) {
 			return Error.OUT_OF_BOUNDS;
@@ -44,32 +41,89 @@ public class Node {
 			return Error.SPACE_FILLED;
 		
 		grid[row][col] = 1;
-		
-		type = playerT;
-		
-		//updateScore(row, col);
-		
-		return Error.SUCCESS;
+						
+		updateScore(row , col);
+		if(player == Player.P1)
+		{
+			player = Player.P2;
+		}
+		else
+		{
+			player = Player.P1;
+		}
+		return Error.SUCCESSFUllMOVE;
 	}
 	
 	
-
+	private void updateScore(int row, int col){
+		
+		if (row % 2 == 0) {
+			int up = row++;
+			int down = row--;
+			if(checkBox(up , col) == true ) {
+				
+				if (player == player.P1){
+					p1Score++;
+				}
+				else {
+					p2Score++;
+				}			
+			}
+			else if(checkBox(down , col) == true ) {
+				
+				if (player == player.P1){
+					p1Score++;
+				}
+				else {
+					p2Score++;
+				}			
+			}
+			
+			
+		}
+		else {
+			
+			int left = col--;
+			int right = col++;
+			if(checkBox(row , left) == true ) {
+				
+				if (player == Player.P1){
+					p1Score++;
+				}
+				else {
+					p2Score++;
+				}			
+			}
+			else if(checkBox(row , right) == true ) {
+				
+				if (player == Player.P1){
+					p1Score++;
+				}
+				else {
+					p2Score++;
+				}			
+			}
+		}
+		
+		
+	}
 	
-	private void updateScore(int row, int col)
+	
+	
+	//Checking the box up/below for a horizontal line move
+	//checking the box left/right for a vertical line move
+	private boolean checkBox(int row, int col)
 	{
-		
+		if(row > 0 && row < grid.length && col > 0 && col < grid[row].length) {
+			return grid[row - 1][col] > 0 && grid[row + 1][col] > 0 && grid[row][col - 1] > 0 && grid[row][col + 1] > 0;
+		}	
+		else return false;
 	}
 	
 
-	private boolean isSurrounded(int row, int col)
-	{
-		
-	}
 	
 
-	
-
-	public boolean isOver()
+	public boolean gameOver()
 	{
 		for(int row = 0; row < grid.length; row++)
 		{
@@ -109,7 +163,7 @@ public class Node {
 				{
 					if(col % 2 == 0)
 						System.out.print("o");
-					else if(grid[row][col] > 0)
+					else if(grid[row][col] > 0) 
 						System.out.print("———");
 					else
 						System.out.print("   ");
